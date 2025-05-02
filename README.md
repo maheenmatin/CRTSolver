@@ -1,25 +1,78 @@
-An outline of the program:
+# CRTSolver Setup Guide
 
-1. Parse the input equations into your internal representation.
+## **Prerequisites**
 
-2. Pick a prime that you haven't used so far, call it p.
+Ensure the following are installed on your system:
 
-3. Generate a copy of the equations that are modulo p and add them to
-the solver.
+- **Linux**
+- **Python 3**
+- **Jupyter Notebook**
+- **Visual Studio Code**
+- **Python and Jupyter extensions for Visual Studio Code**
 
-4. Run the solver.
+---
 
-5. A. If the solver says UNSAT then the whole problem is UNSAT and you
-are done and can return UNSAT.
+## **Setup Instructions**
 
-5. B. If the solver says SAT then it might all be SAT or maybe you
-haven't used enough primes yet.
+### 1. Open a terminal at the project root directory
 
-6. Use the solution from the solver to compute a candidate solution to
-the original problem.
+```bash
+cd /path/to/CRTSolver
+```
 
-7. Try it.  If it works then the original problem is SAT and you can
-return SAT.  If it doesn't then you need another prime, so go back to
-step 2.
+### 2. Create a virtual environment
 
-Credits: Martin Nyx Brain
+```bash
+python3 -m venv venv
+```
+
+### 3. Activate the virtual environment
+
+```bash
+source venv/bin/activate
+```
+
+### 4. Install all dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 5. Open the project in VS Code
+
+```bash
+code .
+```
+
+### 6. Select the Python interpreter
+
+1. Press `Ctrl+Shift+P`
+2. Select the option: `Python: Select Interpreter`
+3. Select the interpreter: `Python 3.x.x ('venv') ./venv/bin/python`
+
+### 7. Run the Jupyter Notebook
+
+1. Open `main/comparative_analysis.ipynb` 
+2. Select `Select Kernel`
+3. Select the option `Python Environments...`
+4. Select the option: `Python 3.x.x ('venv') ./venv/bin/python`
+5. Select `Run All`
+
+---
+
+## **Project File Structure**
+
+```plaintext
+CRTSolver/
+├── main/
+│   ├── crt_components/
+│   ├── results/
+│   ├── tests/
+│   ├── comparative_analysis.ipynb
+│   ├── crt_solver.py
+│   ├── cvc5_solver.py
+│   └── z3_solver.py
+├── venv/
+├── README.txt
+└── requirements.txt
+```
