@@ -2,8 +2,8 @@ from pathlib import Path
 import cvc5
 from cvc5 import Kind
 import time
-import crt_components.input_output.reader as reader
-import crt_components.input_output.writer as writer
+import input_output.reader as reader
+import input_output.writer as writer
 
 # NOTE: Inspired by code and instructions from the following sources:
 # NOTE: https://cvc5.github.io/docs-ci/docs-main/api/python/base/quickstart.html
@@ -16,7 +16,7 @@ class cvc5Solver:
         self.ROOT = Path(__file__).resolve().parents[1]
 
         # Set absolute paths from root directory
-        self.TESTS = self.ROOT / "main" / "tests"
+        self.TESTS = self.ROOT / "main" / "tests_isolated"
         self.RESULTS = self.ROOT / "main" / "results"
 
         self.time_limit = time_limit
@@ -81,9 +81,9 @@ class cvc5Solver:
                     self.sat_model.append(["UNKNOWN (TIMEOUT)"])
 
                 print()
-                self.writer.store_result(file.stem, self.start_time, self.sat_model)
+                self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
 
 if __name__ == "__main__":
-    base_cvc5 = cvc5Solver("10000", "cvc5")
+    base_cvc5 = cvc5Solver("5000", "cvc5")
     base_cvc5.execute()
