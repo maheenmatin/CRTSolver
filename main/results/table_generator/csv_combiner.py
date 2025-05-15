@@ -135,11 +135,25 @@ class CSV_Combiner:
                         inconsistent_files.append(file_name)
                     combined_df.at[index, "SAT"] = "SAT"
 
-        # Print any inconsistent files
-        if inconsistent_files:
-            print("Inconsistent SAT results found for the following files:")
-            for file in set(inconsistent_files): # remove duplicate filenames
-                print(file)
+
+        # Identify unresolved files (still marked as "?")
+        unresolved_files = combined_df[combined_df["SAT"] == "?"]["FileName"].tolist()
+
+        # Identify files requiring manual input (union of inconsistent and x)
+        manual_files = set(inconsistent_files) | set(unresolved_files)
+
+        # Resolve files using manual input
+        if manual_files:
+            print("Manual intervention required for the following files:")
+            for file in manual_files:
+                while True:
+                    sat_value = input(f"Enter SAT or UNSAT for '{file}': ").strip()
+                    if sat_value in {"SAT", "UNSAT"}:
+                        # Set SAT value for file
+                        combined_df.loc[combined_df["FileName"] == file, "SAT"] = sat_value
+                        break
+                    else:
+                        print("Invalid input - type SAT or UNSAT")
 
         # Drop result columns
         result_columns = [f"{solver} Result" for solver in solvers]
