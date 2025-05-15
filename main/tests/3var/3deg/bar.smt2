@@ -4,4 +4,3 @@
 (declare-const y Int)
 (declare-const z Int)
 (assert (= (+ (* (+ x 23) (+ x 23) (+ x 23)) (* (+ y -51) (+ y -51) (+ y -51)) (* (+ z 39) (+ z 39) (+ z 39))) -43))
-(check-sat)

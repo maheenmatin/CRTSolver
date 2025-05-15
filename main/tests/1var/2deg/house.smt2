@@ -2,4 +2,3 @@
 
 (declare-const x Int)
 (assert (= (+ (* -5 x x) (* 7 x) 1) 0))
-(check-sat)
