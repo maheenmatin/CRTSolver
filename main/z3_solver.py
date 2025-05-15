@@ -1,8 +1,8 @@
 from pathlib import Path
 from z3 import *
 import time
-import crt_components.input_output.reader as reader
-import crt_components.input_output.writer as writer
+import input_output.reader as reader
+import input_output.writer as writer
 
 # NOTE: Inspired by code and instructions from the following sources:
 # NOTE: https://ericpony.github.io/z3py-tutorial/guide-examples.htm
@@ -63,9 +63,9 @@ class Z3Solver:
                     self.sat_model.append(["UNKNOWN (TIMEOUT)"])
 
                 print()
-                self.writer.store_result(file.stem, self.start_time, self.sat_model)
+                self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
 
 if __name__ == "__main__":
-    z3_solver = Z3Solver("10000", "Z3")
+    z3_solver = Z3Solver("30000", "Z3")
     z3_solver.execute()

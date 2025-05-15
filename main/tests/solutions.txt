@@ -1,31 +1,53 @@
-1. UNSAT
-2. x=-3
-3. x=-1
-4. x=2
-5. UNSAT
-6. UNSAT
-7. UNSAT
-8. x=1 OR x=-3
-9. x=-2
-10. x=-1
-11. UNSAT
-12. UNSAT
-13. UNSAT
-14. x=3,y=-3 OR x=-2,y=-4
-15. x=1,y=-2
-16. UNSAT
-17. UNSAT
-18. x=-3,y=-3 OR x=0,y=0
-19. x=1,y=-2 OR x=0,y=0
-20. UNSAT
-21. UNSAT
-22. UNSAT
-23. UNSAT
-24. x=2,y=-4,z=2
-25. x=6,y=-1,z=34 OR x=3,y=-6,z=0
-26. x=3,y=-6,z=-2
-27. x=0,y=2,z=0
-28.
-29.
-30. 
-TOTAL: 14 SAT, 13 UNSAT
+cat. UNSAT
+dog. x=-3
+rabbit. x=-1
+elephant. x=2
+squirrel. UNSAT
+house. UNSAT
+theater. UNSAT
+home. x=1 OR x=-3
+heart. x=-2
+nostalgia. x=-1
+rose. UNSAT
+clown. UNSAT
+plate. UNSAT
+truck. x=3,y=-3 OR x=-2,y=-4
+small. x=1,y=-2
+unusual. UNSAT
+faint. UNSAT
+oblong. x=-3,y=-3 OR x=0,y=0
+email. x=1,y=-2 OR x=0,y=0
+touch. UNSAT
+inertia. UNSAT
+waste. UNSAT
+forget. UNSAT
+vampire. x=2,y=-4,z=2
+beast. x=6,y=-1,z=34 OR x=3,y=-6,z=0
+robot. x=3,y=-6,z=-2
+tank. x=0,y=2,z=0
+bar. UNKNOWN (TIMEOUT / ERROR)
+western. UNKNOWN (TIMEOUT / ERROR)
+titanium. UNKNOWN (TIMEOUT / ERROR)
+Total: 14 SAT, 10 UNSAT, 6 UNKNOWN
+
+ghost. 
+world. 
+horror. 
+terror. 
+designer. 
+twisted. 
+twilight. 
+sunset. 
+banana.
+orange.
+trivial. 
+forceful. 
+strawberry. 
+blueberry. 
+happy. 
+sad. 
+peace. 
+crazy. 
+hot. 
+cold. 
+Total: x SAT, x UNSAT, x UNKNOWN

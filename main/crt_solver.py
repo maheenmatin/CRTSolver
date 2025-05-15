@@ -3,8 +3,8 @@ from cvc5 import Kind
 import time
 import builtins
 from pathlib import Path
-import crt_components.input_output.reader as reader
-import crt_components.input_output.writer as writer
+import input_output.reader as reader
+import input_output.writer as writer
 import crt_components.solvers.modulo as modulo
 import crt_components.solvers.modulo_bv as modulo_bv
 import crt_components.solvers.candidate as candidate
@@ -47,6 +47,8 @@ class CRTSolver:
     def execute(self):
         for file in reader.get_sorted_files(self.TESTS):
             if file.is_file():
+                #builtins.input("Press any key to continue:")
+
                 # Reinitialize data for new file
                 self.reinit()
                 print(f"Reading file: {file}")
@@ -76,7 +78,7 @@ class CRTSolver:
                     self.sat_model.append(["UNKNOWN (ERROR)"])
                     self.continue_sat = False
 
-                self.writer.store_result(file.stem, self.start_time, self.sat_model)
+                self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
 
     def init_mod_and_candidate(self):
