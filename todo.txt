@@ -1,0 +1,33 @@
+Things We Need to Do
+====================
+
+* Results table - DONE
+  remove the actual equation
+  SAT column should say SAT or UNSAT
+  time in seconds, more than 1 sec -> use 3 decimal places, if it is less than 1s write in 
+    scientific notation with 3 sig. fig.
+  I/O should have time with it
+
+* Cactus plot - DONE
+  for each solver, take just the runs which give SAT or UNSAT, sort them by asceding run-time 
+    and plot number of problems solved
+
+* Pick a license - DONE
+
+* Tag the version of the code use to make the results. - DONE
+
+* Find out why the CRTSolver is timing out on some of the benchmarks -- is it the modulo computation 
+  or the candidates? - modulo or candidate
+
+* Try out changing the candidate checking to use disjunctions (see e-mail)
+
+* Update results for new test batch
+
+* Tests for multiple equations
+  number of equations 1 to 5
+  degrees 2 to 6
+  variables 1 to 6
+
+* Verify these examples
+
+* Try changing the modulo computation to use multi-precision / big integers so that it doesn't overflow.
