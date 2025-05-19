@@ -46,7 +46,7 @@ class LaTeX_Creator:
                 match = re.search(r"I/O\s*\((\d*\.?\d+)\)", runtime)
                 overflow_time = match.group(1)
                 formatted_time = self.format_runtime(overflow_time)
-                return f"I/O ({formatted_time})"
+                return f"U ({formatted_time})"
             
             # Handle runtime
             else:

@@ -3,7 +3,7 @@ import cvc5
 from cvc5 import Kind
 
 class Candidate:
-    def __init__(self, ast, API, terms, utility, main):
+    def __init__(self, ast, API, terms, utility, main, disjunction):
         self.ast = ast
         self.API = API
         self.terms = terms
@@ -11,6 +11,7 @@ class Candidate:
         self.main = main
         self.prime = 2
         self.mod_results = {} # {constant_name: (modulus, result)}
+        self.disjunction = disjunction
 
     def compute_candidate(self, candidate_list):
         # candidate_list = [(constant_name, modulus, result)]
@@ -18,11 +19,12 @@ class Candidate:
 
         # Create one candidate term for each 
         # These are the starting values for finding further candidates
-        candidate_dict = {} # candidate_dict = {constant_name, integer_value}
+        candidate_dict = {} # {constant_name: integer_value}
         if self.mod_results: # mod 3 onwards
             for candidate in candidate_list:
                 old_mod_result = self.mod_results[candidate[0]]
-                new_mod_result = self.find_new_candidate((candidate[1], candidate[2]), old_mod_result)
+                current_mod_result = (candidate[1], candidate[2])
+                new_mod_result = self.find_new_candidate(current_mod_result, old_mod_result)
                 self.mod_results[candidate[0]] = new_mod_result
                 candidate_dict[candidate[0]] = new_mod_result[1]
         else: # mod 2
@@ -30,12 +32,16 @@ class Candidate:
                 self.mod_results[candidate[0]] = (candidate[1], candidate[2])
                 candidate_dict[candidate[0]] = candidate[2]
 
-        candidate_terms = self.populate_candidate_terms(candidate_dict)
-        self.check_all_candidates(candidate_terms)
+        if self.disjunction:
+            candidate_terms = self.populate_candidate_terms_disjunction(candidate_dict)
+            self.check_all_candidates_disjunction(candidate_terms)
+        else:
+            candidate_terms = self.populate_candidate_terms(candidate_dict)
+            self.check_all_candidates(candidate_terms)
 
     def populate_candidate_terms(self, candidate_dict):
-        # 2 constants, 2 build_candidates each = 2^2 = 4 total variations
-        # 3 constants, 4 build_candidates each = 4^3 = 64 total variations
+        # 2 constants, 5 candidates each = 5^5 = 25 total combinations
+        # 3 constants, 5 candidates each = 5^5^5 = 125 total combinations
 
         # Construct Cartesian product of offsets (one list for each constant)
         offset_list = [0, -self.prime, self.prime, -(2*self.prime), 2*self.prime]
@@ -50,16 +56,33 @@ class Candidate:
                 new_value = value + offset
                 term = self.utility.handle_integer(new_value)
                 candidate_section[name] = term
-            candidate_terms.append([candidate_section])          
+            candidate_terms.append([candidate_section])
         return candidate_terms
+    
+    def populate_candidate_terms_disjunction(self, candidate_dict):
+        # 2 constants, 5 candidates each =
+        # conjunction of 2 groups, each group is a disjunction of 5 candidates
+        # 3 constants 5 candidates each =
+        # conjunction of 3 groups, each group is a disjunction of 5 candidates
 
+        offset_list = [0, -self.prime, self.prime, -(2*self.prime), 2*self.prime]
+        candidate_terms = {}
+
+        for name, value in candidate_dict.items():
+            candidate_terms[name] = [
+                self.utility.handle_integer(value + offset)
+                for offset in offset_list
+            ]
+        return candidate_terms
+        
     def check_all_candidates(self, candidate_terms):
         # candidate_terms = [
         # [{constant_name1: value1, constant_name2: value2, constant_name3: value3}],
         # [{constant_name1: value4, constant_name2: value5, constant_name3: value6}]]
 
         for candidate_section in candidate_terms:
-            self.process() # reset assertions + ready solver for candidate checking
+            # Reset assertions + ready solver for candidate checking
+            self.process()
             print("Attempting to solve with candidates:")
             for candidate_dict in candidate_section:
                 for name, value in candidate_dict.items():
@@ -72,6 +95,38 @@ class Candidate:
             if not (self.main.check_candidate()):
                 # Break loop if candidate solution is correct
                 break
+
+    def check_all_candidates_disjunction(self, candidate_terms):
+        # candidate_terms = {
+        # constant_name1: [value1, value2, value3],
+        # constant_name2: [value1, value2, value3]}
+
+        def create_disjunction(name, values):
+            # name = cvc5 constant, values = list of cvc5 integers
+            equals_constraints = [self.API.solver.mkTerm(Kind.EQUAL, self.terms.vars[name], value)
+                for value in values]
+            
+            disjunction = self.API.solver.mkTerm(Kind.OR, *equals_constraints)                        
+            return disjunction
+        
+        # Reset assertions + ready solver for candidate checking
+        self.process()
+        print("Attempting to solve with candidates:")
+        for name, values in candidate_terms.items():
+            print(f"{name}: {values}")
+
+        # Create disjunction of candidate terms (for each constant)
+        disjunctions = [create_disjunction(name, values) for name, values in candidate_terms.items()]
+
+        # Create conjunction of groups of candidate terms (grouped by constant)
+        if len(disjunctions) > 1: # more than 1 constant
+            constraint = self.API.solver.mkTerm(Kind.AND, *disjunctions)
+        else: # only 1 constant
+            constraint = disjunctions[0]
+        
+        # Check all candidates at once
+        self.API.solver.assertFormula(constraint)
+        self.main.check_candidate()
 
     def process(self):
         # Reset constant=candidate assertion

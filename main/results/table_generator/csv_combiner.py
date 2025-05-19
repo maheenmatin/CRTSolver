@@ -148,12 +148,12 @@ class CSV_Combiner:
             for file in manual_files:
                 while True:
                     sat_value = input(f"Enter SAT or UNSAT for '{file}': ").strip()
-                    if sat_value in {"SAT", "UNSAT"}:
+                    if sat_value in {"SAT", "UNSAT", "?"}:
                         # Set SAT value for file
                         combined_df.loc[combined_df["FileName"] == file, "SAT"] = sat_value
                         break
                     else:
-                        print("Invalid input - type SAT or UNSAT")
+                        print("Invalid input - type SAT, UNSAT or ?")
 
         # Drop result columns
         result_columns = [f"{solver} Result" for solver in solvers]
