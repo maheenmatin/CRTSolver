@@ -2,7 +2,7 @@ import cvc5
 from cvc5 import Kind
 import time
 import builtins
-import multiprocessing
+import signal
 from pathlib import Path
 import input_output.reader as reader
 import input_output.writer as writer
@@ -13,6 +13,7 @@ import crt_components.helpers.dto as dto
 import crt_components.helpers.prime_generator as prime_generator
 import crt_components.helpers.utility as utility
 import crt_components.errors.error as error
+import crt_components.errors.handler as handler
 
 class CRTSolver:
     def __init__(self, use_bitvectors, time_limit, solver_name):
@@ -26,8 +27,7 @@ class CRTSolver:
         self.RESULTS = self.ROOT / "main" / "results"
 
         self.use_bitvectors = use_bitvectors
-        self.time_limit = time_limit # timeout for each check-sat in cvc5 (milliseconds)
-        self.total_time_limit = float(time_limit) / 1000.0 # total time limit (seconds)
+        self.time_limit = time_limit
         self.solver_name = solver_name
         self.writer = writer.Writer(self.RESULTS, self.solver_name)
         
@@ -38,6 +38,7 @@ class CRTSolver:
         self.primes = dto.Primes()
         self.bitwidth = dto.Bitwidth()
         self.utility = utility.Utility(self.API, self.terms, self.primes, self.bitwidth, self)
+        self.start_time = time.time()
         self.ast = []
         self.sat_model = [] # if SAT, stores satisfying values
         self.continue_sat = True # flag for while loop
@@ -49,60 +50,49 @@ class CRTSolver:
         for file in reader.get_sorted_files(self.TESTS):
             if file.is_file():
                 #builtins.input("Press any key to continue:")
-                result_queue = multiprocessing.Queue() # queue for sat_model
-                start_time = time.time()
 
-                # Start a new subprocess for each file
-                process = multiprocessing.Process(
-                    target=self.process_file_wrapper,
-                    args=(str(file), result_queue)
-                )
-                process.start()
-                process.join(self.total_time_limit)
+                # Reinitialize data for new file
+                self.reinit()
+                print(f"Reading file: {file}")
 
-                # If process times out, terminate and store result
-                if process.is_alive():
-                    print(f"Timeout reached for {file.name}. Terminated process.")
-                    process.terminate()
-                    process.join()
-                    self.writer.store_result(file, start_time, [["UNKNOWN (TIMEOUT)"]])
+                # Get AST
+                with file.open("r") as input:
+                    self.ast = reader.preprocess(input, self.API, self.terms)
 
-                # If process terminates normally, get result from queue and store
-                else:
-                    sat_model = result_queue.get_nowait() # do not block and wait
-                    self.writer.store_result(file, start_time, sat_model)
+                # Initialize modulo and candidate
+                self.init_mod_and_candidate()
+
+                # Set up signal for solver timeout
+                signal.signal(signal.SIGALRM, handler.timeout_handler)
+                # Set alarm time -> integer division gives timeout in seconds
+                signal.alarm(int(self.time_limit) // 1000)
+
+                try:
+                    while self.continue_sat:
+                        # Attempt to solve modulo prime
+                        self.solve_modulo()
+                        # If UNSAT modulo prime, original problem is also UNSAT
+                        if self.continue_sat:
+                            # If SAT, attempt to solve original problem with candidate solution
+                            self.solve_candidate()
+                            # If SAT, original problem is SAT and candidate solution is correct
+                            # If UNSAT, attempt to solve modulo new prime
+                            #builtins.input("Press any key to continue:")
+                except error.AbortFileException as e:
+                    print(e)
+                    print("UNKNOWN (ERROR)\n")
+                    self.continue_sat = False
+                    self.sat_model.append(["UNKNOWN (ERROR)"])
+                    self.continue_sat = False
+                except error.TimeoutException:
+                    print("UNKNOWN (TIMEOUT)\n")
+                    self.continue_sat = False
+                    self.sat_model.append(["UNKNOWN (TIMEOUT)"])
+                finally:
+                    signal.alarm(0) # disable alarm
+
+                self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
-
-    def process_file_wrapper(self, file, result_queue):
-        try:
-            self.reinit()
-            self.process_file(file)
-        except error.AbortFileException as e:
-            print(f"AbortFileException: {e}")
-            self.sat_model.append(["UNKNOWN (ERROR)"])
-        result_queue.put(self.sat_model)
-
-    def process_file(self, file):
-        file = Path(file) # convert back to Path object
-        print(f"Reading file: {file}")
-
-        # Get AST
-        with file.open("r") as input:
-            self.ast = reader.preprocess(input, self.API, self.terms)
-
-        # Initialize modulo and candidate
-        self.init_mod_and_candidate()
-
-        while self.continue_sat:
-            # Attempt to solve modulo prime
-            self.solve_modulo()
-            # If UNSAT modulo prime, original problem is also UNSAT
-            if self.continue_sat:
-                # If SAT, attempt to solve original problem with candidate solution
-                self.solve_candidate()
-                # If SAT, original problem is SAT and candidate solution is correct
-                # If UNSAT, attempt to solve modulo new prime
-                #builtins.input("Press any key to continue:")
 
     def init_mod_and_candidate(self):
         if self.use_bitvectors:
@@ -165,7 +155,7 @@ class CRTSolver:
     def check_candidate(self):
         # If SAT, original problem is SAT and candidate solution is correct
         if self.API.solver.checkSat().isSat():
-            self.continue_sat = False
+            self.continue_sat = continue_check = False
             print("Candidate SAT")
             for name, constant in self.terms.vars.items():
                 # Get solution from solver
@@ -173,11 +163,11 @@ class CRTSolver:
                 print(f"{name}: {model}")
                 self.sat_model.append([name, model])
             print()
-            return False
         # If UNSAT, attempt to solve modulo new prime
         else:
+            continue_check = True
             print("Candidate UNSAT")
-            return True
+        return continue_check
 
 if __name__ == "__main__":
     #crt_solver_int = CRTSolver(False, "10000", "CRTSolver (Integer Mode)")
