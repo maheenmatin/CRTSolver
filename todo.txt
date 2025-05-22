@@ -24,16 +24,17 @@ Things We Need to Do
   -- In the results table mark this "U (7.10*10^{-2})"
 
 * Try out changing the candidate checking to use disjunctions (see e-mail) - DONE
-  -- Significantly slower solving speeds when using disjunctions (see tmp_results)
+  -- Significantly slower solving speeds when using disjunctions (see tmp_results->disjunctions)
 
-* Update results for new test batch - DOING
-  -- see tmp_results
+* Update results for new test batch - DONE
+  -- see tmp_results->456var
 
-* Tests for multiple equations
+* Tests for multiple equations - DOING
   number of equations 1 to 5
   degrees 2 to 6
   variables 1 to 6
 
-* Verify these examples
+* Verify these examples - DOING
+  -- see tmp_results->verify
 
 * Try changing the modulo computation to use multi-precision / big integers so that it doesn't overflow.
