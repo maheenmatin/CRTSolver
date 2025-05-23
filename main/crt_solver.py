@@ -23,7 +23,7 @@ class CRTSolver:
         self.ROOT = Path(__file__).resolve().parents[1]
 
         # Set absolute paths from root directory
-        self.TESTS = self.ROOT / "main" / "tests"
+        self.TESTS = self.ROOT / "main" / "tests_isolated"
         self.RESULTS = self.ROOT / "main" / "results"
 
         self.use_bitvectors = use_bitvectors
@@ -101,7 +101,7 @@ class CRTSolver:
         else:
             self.modulo = modulo.Modulo(
                 self.ast, self.API, self.terms, self.primes, self.utility)
-        self.candidate = candidate.Candidate(self.ast, self.API, self.terms, self.utility, self, False)
+        self.candidate = candidate.Candidate(self.ast, self.API, self.terms, self.utility, self)
 
     def solve_modulo(self):
         # Get current prime
