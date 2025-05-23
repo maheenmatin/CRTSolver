@@ -23,7 +23,7 @@ class CRTSolver:
         self.ROOT = Path(__file__).resolve().parents[1]
 
         # Set absolute paths from root directory
-        self.TESTS = self.ROOT / "main" / "tests_isolated"
+        self.TESTS = self.ROOT / "main" / "tests"
         self.RESULTS = self.ROOT / "main" / "results"
 
         self.use_bitvectors = use_bitvectors
