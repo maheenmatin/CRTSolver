@@ -85,5 +85,5 @@ class cvc5Solver:
         self.writer.write()
 
 if __name__ == "__main__":
-    base_cvc5 = cvc5Solver("5000", "cvc5")
+    base_cvc5 = cvc5Solver("10000", "cvc5")
     base_cvc5.execute()

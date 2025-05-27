@@ -2,6 +2,7 @@ import cvc5
 from cvc5 import Kind
 import time
 import builtins
+import signal
 from pathlib import Path
 import input_output.reader as reader
 import input_output.writer as writer
@@ -12,6 +13,7 @@ import crt_components.helpers.dto as dto
 import crt_components.helpers.prime_generator as prime_generator
 import crt_components.helpers.utility as utility
 import crt_components.errors.error as error
+import crt_components.errors.handler as handler
 
 class CRTSolver:
     def __init__(self, use_bitvectors, time_limit, solver_name):
@@ -60,6 +62,11 @@ class CRTSolver:
                 # Initialize modulo and candidate
                 self.init_mod_and_candidate()
 
+                # Set up signal for solver timeout
+                signal.signal(signal.SIGALRM, handler.timeout_handler)
+                # Set alarm time -> integer division gives timeout in seconds
+                signal.alarm(int(self.time_limit) // 1000)
+
                 try:
                     while self.continue_sat:
                         # Attempt to solve modulo prime
@@ -77,6 +84,12 @@ class CRTSolver:
                     self.continue_sat = False
                     self.sat_model.append(["UNKNOWN (ERROR)"])
                     self.continue_sat = False
+                except error.TimeoutException:
+                    print("UNKNOWN (TIMEOUT)\n")
+                    self.continue_sat = False
+                    self.sat_model.append(["UNKNOWN (TIMEOUT)"])
+                finally:
+                    signal.alarm(0) # disable alarm
 
                 self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()

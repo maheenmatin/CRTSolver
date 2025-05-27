@@ -67,11 +67,30 @@ class Modulo_BV:
             operator = subtree[0]
             operands = [self.process_bv_mod_constraint
                 (operand) for operand in subtree[1:]]
-            term = self.utility.create_bv_mod_term(operator, operands)
 
-            # For all operations other than equals, wrap with mod p
-            if operator == "=":
-                return term
+            if operator == "*":
+                # Special handling for multiplication - nesting required
+                return self.process_mult(operands)
             else:
-                return self.API.mod_solver.mkTerm(Kind.BITVECTOR_UREM, term, self.primes.prime_bv)
-            
+                term = self.utility.create_bv_mod_term(operator, operands)
+                # For all operations other than equals, wrap with mod p
+                if operator == "=":
+                    return term
+                else:
+                    return self.API.mod_solver.mkTerm(Kind.BITVECTOR_UREM, term, self.primes.prime_bv)
+                
+    def process_mult(self, operands):
+        # Raise assertion error if less than 2 operands
+        assert len(operands) >= 2 
+
+        # Create multiplication term with first two numbers, then apply mod p
+        term = self.API.mod_solver.mkTerm(Kind.BITVECTOR_MULT, operands[0], operands[1])
+        term = self.API.mod_solver.mkTerm(Kind.BITVECTOR_UREM, term, self.primes.prime_bv)
+
+        # Create multiplication terms with remaining numbers, applying mod p for each additional number
+        for operand in operands[2:]:
+            term = self.API.mod_solver.mkTerm(Kind.BITVECTOR_MULT, term, operand)
+            term = self.API.mod_solver.mkTerm(Kind.BITVECTOR_UREM, term, self.primes.prime_bv)
+        
+        return term
+    
