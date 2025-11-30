@@ -1,0 +1,26 @@
+[project]
+name = "crtsolver"
+version = "1.1.0"
+description = "Solving non-linear integer problems using the Chinese Remainder Theorem"
+authors = [
+    {name = "maheenmatin",email = "maheenmatin@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+package-mode = false
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "cvc5 (>=1.2.1,<1.4)",
+    "z3-solver (>=4.14.1.0,<4.16)",
+    "numpy (>=2.2,<2.3)",
+    "pandas (>=2.2,<2.3)",
+    "matplotlib (>=3.10,<3.11)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^7.1.0"
