@@ -4,9 +4,9 @@ import pandas as pd
 class CSV_Combiner:
     def __init__(self):
         # Paths
-        self.ROOT = Path(__file__).resolve().parents[3]
-        self.INPUT_PATH = self.ROOT / "main" / "results"
-        self.OUTPUT_PATH = self.ROOT / "main" / "results" / "tables" / "combined_results.csv"
+        self.ROOT = Path(__file__).resolve().parents[2]
+        self.INPUT_PATH = self.ROOT / "results"
+        self.OUTPUT_PATH = self.ROOT / "results" / "combined_results.csv"
 
         self.SOLVER_LIST = [
             "CRTSolver (Integer Mode)",
@@ -164,8 +164,10 @@ class CSV_Combiner:
         columns.insert(columns.index("Degree") + 1, columns.pop(columns.index("SAT")))
         combined_df = combined_df[columns]
         return combined_df
-
-if __name__ == "__main__":
+    
+def main():
     combiner = CSV_Combiner()
     combiner.execute()
-    
+
+if __name__ == "__main__":
+    main()

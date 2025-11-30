@@ -29,25 +29,3 @@ bar. UNKNOWN (TIMEOUT / ERROR)
 western. UNKNOWN (TIMEOUT / ERROR)
 titanium. UNKNOWN (TIMEOUT / ERROR)
 Total: 14 SAT, 10 UNSAT, 6 UNKNOWN
-
-ghost. 
-world. 
-horror. 
-terror. 
-designer. 
-twisted. 
-twilight. 
-sunset. 
-banana.
-orange.
-trivial. 
-forceful. 
-strawberry. 
-blueberry. 
-happy. 
-sad. 
-peace. 
-crazy. 
-hot. 
-cold. 
-Total: x SAT, x UNSAT, x UNKNOWN

@@ -26,4 +26,4 @@ ipykernel = "^7.1.0"
 [project.scripts]
 crt-solver = "crtsolver.solvers.crt_solver:main"
 cvc5-solver = "crtsolver.solvers.cvc5_solver:main"
-z3-solver   = "crtsolver.solvers.z3_solver:main"
+z3-solver = "crtsolver.solvers.z3_solver:main"

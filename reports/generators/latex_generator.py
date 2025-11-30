@@ -2,12 +2,12 @@ from pathlib import Path
 import pandas as pd
 import re
 
-class LaTeX_Creator:
+class LaTeX_Generator:
     def __init__(self):
         # Paths
-        self.ROOT = Path(__file__).resolve().parents[3]
-        self.INPUT_PATH = self.ROOT / "main" / "results" / "tables" / "combined_results.csv"
-        self.OUTPUT_PATH = self.ROOT / "main" / "results" / "tables" / "latex_table.txt"
+        self.ROOT = Path(__file__).resolve().parents[2]
+        self.INPUT_PATH = self.ROOT / "results" / "combined_results.csv"
+        self.OUTPUT_PATH = self.ROOT / "reports" / "latex_table.txt"
     
     def execute(self):
         latex_lines = self.populate_latex_lines()
@@ -60,8 +60,11 @@ class LaTeX_Creator:
                 # If greater than 1s, round to 3 decimal places
                 else:
                     return f"${runtime:.3f}$"
-
-if __name__ == "__main__":
-    creator = LaTeX_Creator()
+                
+def main():
+    creator = LaTeX_Generator()
     creator.execute()
     
+
+if __name__ == "__main__":
+    main()
