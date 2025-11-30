@@ -29,3 +29,37 @@ bar. UNKNOWN (TIMEOUT / ERROR)
 western. UNKNOWN (TIMEOUT / ERROR)
 titanium. UNKNOWN (TIMEOUT / ERROR)
 Total: 14 SAT, 10 UNSAT, 6 UNKNOWN
+<<<<<<< HEAD:tests/solutions.txt
+=======
+
+ghost. 
+world. 
+horror. 
+terror. 
+designer. 
+twisted. 
+twilight. 
+sunset. 
+banana.
+orange.
+trivial. 
+forceful. 
+strawberry. 
+blueberry. 
+happy. 
+sad. 
+peace. 
+crazy. 
+hot. 
+cold. 
+Total: x SAT, x UNSAT, x UNKNOWN
+
+enigma. x=7
+terminate. UNSAT
+machine. x=13, y=7
+moon. UNSAT
+train. x=7, y=19, z=11
+doctor. UNSAT
+motor. UNSAT
+professor. x=4, y=6, z=7
+>>>>>>> main:main/tests/solutions.txt

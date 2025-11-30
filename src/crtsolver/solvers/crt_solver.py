@@ -3,11 +3,25 @@ from cvc5 import Kind
 import time
 import argparse
 import builtins
+import signal
 from pathlib import Path
+<<<<<<< HEAD:src/crtsolver/solvers/crt_solver.py
 from crtsolver.input_output import reader, writer
 from crtsolver.crt_components.engine import modulo, modulo_bv, candidate
 from crtsolver.crt_components.helpers import dto, prime_generator, utility
 from crtsolver.crt_components.errors import error
+=======
+import input_output.reader as reader
+import input_output.writer as writer
+import crt_components.solvers.modulo as modulo
+import crt_components.solvers.modulo_bv as modulo_bv
+import crt_components.solvers.candidate as candidate
+import crt_components.helpers.dto as dto
+import crt_components.helpers.prime_generator as prime_generator
+import crt_components.helpers.utility as utility
+import crt_components.errors.error as error
+import crt_components.errors.handler as handler
+>>>>>>> main:main/crt_solver.py
 
 class CRTSolver:
     def __init__(self, time_limit="30000", solver_name="CRTSolver", use_bitvectors=True):
@@ -61,6 +75,11 @@ class CRTSolver:
                 # Initialize modulo and candidate
                 self.init_mod_and_candidate()
 
+                # Set up signal for solver timeout
+                signal.signal(signal.SIGALRM, handler.timeout_handler)
+                # Set alarm time -> integer division gives timeout in seconds
+                signal.alarm(int(self.time_limit) // 1000)
+
                 try:
                     while self.continue_sat:
                         # Attempt to solve modulo prime
@@ -78,6 +97,12 @@ class CRTSolver:
                     self.continue_sat = False
                     self.sat_model.append(["UNKNOWN (ERROR)"])
                     self.continue_sat = False
+                except error.TimeoutException:
+                    print("UNKNOWN (TIMEOUT)\n")
+                    self.continue_sat = False
+                    self.sat_model.append(["UNKNOWN (TIMEOUT)"])
+                finally:
+                    signal.alarm(0) # disable alarm
 
                 self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()

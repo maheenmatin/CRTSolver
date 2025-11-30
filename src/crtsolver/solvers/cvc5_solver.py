@@ -101,4 +101,9 @@ def main():
     solver.execute()
 
 if __name__ == "__main__":
+<<<<<<< HEAD:src/crtsolver/solvers/cvc5_solver.py
     main()
+=======
+    base_cvc5 = cvc5Solver("10000", "cvc5")
+    base_cvc5.execute()
+>>>>>>> main:main/cvc5_solver.py

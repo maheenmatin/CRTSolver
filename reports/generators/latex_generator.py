@@ -23,16 +23,18 @@ class LaTeX_Generator:
         latex_lines = []
 
         for _, row in df.iterrows():
+            name = row["FileName"]
             var = int(row["Variables"])
             deg = int(row["Degree"])
             sat = row["SAT"]
+            equations = "?"
 
             crt_int = self.format_runtime(row["CRT-INT Runtime"])
             crt_bv = self.format_runtime(row["CRT-BV Runtime"])
             z3 = self.format_runtime(row["Z3 Runtime"])
             cvc5 = self.format_runtime(row["cvc5 Runtime"])
 
-            latex_row = f"{var} & {deg} & {sat} & {crt_int} & {crt_bv} & {z3} & {cvc5} \\\\"
+            latex_row = f"{name} & {var} & {deg} & {equations} & {sat} & {crt_int} & {crt_bv} & {z3} & {cvc5} \\\\"
             latex_lines.append(latex_row)
         return latex_lines
 
@@ -46,7 +48,7 @@ class LaTeX_Generator:
                 match = re.search(r"I/O\s*\((\d*\.?\d+)\)", runtime)
                 overflow_time = match.group(1)
                 formatted_time = self.format_runtime(overflow_time)
-                return f"I/O ({formatted_time})"
+                return f"U ({formatted_time})"
             
             # Handle runtime
             else:
