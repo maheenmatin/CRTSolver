@@ -1,6 +1,7 @@
 import cvc5
 from cvc5 import Kind
 import time
+import argparse
 import builtins
 from pathlib import Path
 from crtsolver.input_output import reader, writer
@@ -9,7 +10,7 @@ from crtsolver.crt_components.helpers import dto, prime_generator, utility
 from crtsolver.crt_components.errors import error
 
 class CRTSolver:
-    def __init__(self, use_bitvectors, time_limit, solver_name):
+    def __init__(self, time_limit="30000", solver_name="CRTSolver", use_bitvectors=True):
         # Set root directory for robust file paths
         # CRTSolver -> src -> solvers -> crt_solver.py
         # crt_solver.py = file, solvers = parents[0], crtsolver = parents[1],
@@ -20,9 +21,13 @@ class CRTSolver:
         self.TESTS = self.ROOT / "tests"
         self.RESULTS = self.ROOT / "results"
 
+        if use_bitvectors:
+            self.solver_name = solver_name + " (Bit-Vector Mode)"
+        else:
+            self.solver_name = solver_name + " (Integer Mode)"
+
         self.use_bitvectors = use_bitvectors
         self.time_limit = time_limit
-        self.solver_name = solver_name
         self.writer = writer.Writer(self.RESULTS, self.solver_name)
         
     def reinit(self):
@@ -152,12 +157,35 @@ class CRTSolver:
             print("Candidate UNSAT")
         return continue_check
     
+# CLI entry point
 def main():
     #crt_solver_int = CRTSolver(False, "10000", "CRTSolver (Integer Mode)")
     #crt_solver_int.execute()
 
-    crt_solver_bv = CRTSolver(True, "100", "CRTSolver (Bit-Vector Mode)")
-    crt_solver_bv.execute()
+    parser = argparse.ArgumentParser(description="Run CRTSolver on a directory of SMT2 files.")
+    parser.add_argument("--time_limit", type=int, default=30000,
+        help="Time limit for each check-sat (in ms).")
+    parser.add_argument("--solver_name", default="CRTSolver",
+        help="Name for the solver run (used in output results).")
+    parser.add_argument("--tests_dir", default=None,
+        help="Path to directory containing test SMT2 files.")
+    
+    # Default: use_bitvectors = True (bit-vector mode)
+    parser.set_defaults(use_bitvectors=True)
+    parser.add_argument(
+        "--integer_mode",
+        dest="use_bitvectors",
+        action="store_false",
+        help="Disable bit-vector mode (use integer mode instead)."
+    )
+    args = parser.parse_args()
+
+    solver = CRTSolver(
+        time_limit=str(args.time_limit),
+        solver_name=args.solver_name,
+        use_bitvectors=args.use_bitvectors
+    )
+    solver.execute()
 
 if __name__ == "__main__":
     main()

@@ -1,13 +1,14 @@
 from pathlib import Path
 from z3 import *
 import time
+import argparse
 from crtsolver.input_output import reader, writer
 
 # NOTE: Inspired by code and instructions from the following sources:
 # NOTE: https://ericpony.github.io/z3py-tutorial/guide-examples.htm
 # NOTE: https://z3prover.github.io/papers/programmingz3.html
 class Z3Solver:
-    def __init__(self, time_limit, solver_name):
+    def __init__(self, time_limit="30000", solver_name="Z3"):
         # Set root directory for robust file paths
         # CRTSolver -> src -> solvers -> z3_solver.py
         # z3_solver.py = file, solvers = parents[0], crtsolver = parents[1],
@@ -66,9 +67,20 @@ class Z3Solver:
                 self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
 
+# CLI entry point
 def main():
-    z3_solver = Z3Solver("100", "Z3")
-    z3_solver.execute()
+    parser = argparse.ArgumentParser(description="Run the Z3 solver on a directory of SMT2 files.")
+    parser.add_argument("--time_limit", type=int, default=30000,
+        help="Time limit for each check-sat (in ms).")
+    parser.add_argument("--solver_name", default="Z3",
+        help="Name for the solver run (used in output results).")
+    args = parser.parse_args()
+
+    solver = Z3Solver(
+        time_limit=str(args.time_limit),
+        solver_name=args.solver_name,
+    )
+    solver.execute()
 
 if __name__ == "__main__":
     main()

@@ -2,13 +2,14 @@ from pathlib import Path
 import cvc5
 from cvc5 import Kind
 import time
+import argparse
 from crtsolver.input_output import reader, writer
 
 # NOTE: Inspired by code and instructions from the following sources:
 # NOTE: https://cvc5.github.io/docs-ci/docs-main/api/python/base/quickstart.html
 # NOTE: https://cvc5.github.io/docs-ci/docs-main/examples/parser.html
 class cvc5Solver:
-    def __init__(self, time_limit, solver_name):
+    def __init__(self, time_limit="30000", solver_name="cvc5"):
         # Set root directory for robust file paths
         # CRTSolver -> src -> solvers -> cvc5_solver.py
         # cvc5_solver.py = file, solvers = parents[0], crtsolver = parents[1],
@@ -84,9 +85,20 @@ class cvc5Solver:
                 self.writer.store_result(file, self.start_time, self.sat_model)
         self.writer.write()
 
+# CLI entry point
 def main():
-    base_cvc5 = cvc5Solver("100", "cvc5")
-    base_cvc5.execute()
+    parser = argparse.ArgumentParser(description="Run the cvc5 solver on a directory of SMT2 files.")
+    parser.add_argument("--time_limit", type=int, default=30000,
+        help="Time limit for each check-sat (in ms).")
+    parser.add_argument("--solver_name", default="cvc5",
+        help="Name for the solver run (used in output results).")
+    args = parser.parse_args()
+
+    solver = cvc5Solver(
+        time_limit=str(args.time_limit),
+        solver_name=args.solver_name,
+    )
+    solver.execute()
 
 if __name__ == "__main__":
     main()
