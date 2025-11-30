@@ -83,7 +83,7 @@ From the project root:
 # CRTSolver (Bit-Vector Mode)
 poetry run crt-solver \
   --time_limit 30000 \
-  --solver_name "CRTSolver" \
+  --solver_name "CRTSolver"
 
 # CRTSolver (Integer Mode)
 poetry run crt-solver \
@@ -94,12 +94,12 @@ poetry run crt-solver \
 # cvc5
 poetry run cvc5-solver \
   --time_limit 30000 \
-  --solver_name "cvc5" \
+  --solver_name "cvc5"
 
 # Z3
 poetry run z3-solver \
   --time_limit 30000 \
-  --solver_name "z3" \
+  --solver_name "z3"
 ```
 
 Results are written into the `results/` directory.
