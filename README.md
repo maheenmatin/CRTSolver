@@ -11,11 +11,9 @@ CRTSolver is a prototype SMT solver for  non-linear integer equations that lever
 
 The algorithm uses an abstraction–refinement style semi-decision procedure for sets of polynomial equations over the integers. A modulo solver, implemented using cvc5, incrementally solves copies of the problem modulo an ascending sequence of pairwise-coprime moduli. Models from all modulo instances seen so far are combined using the Chinese Remainder Theorem to produce candidate solutions modulo the product of the moduli; these are lifted to a small family of integer candidates, each of which is checked by a second cvc5 instance over the original non-linear integer formula.
 
-Unsatisfiability modulo some modulus proves UNSAT, while a satisfying candidate proves SAT; otherwise additional moduli and candidates are explored. The implementation offers Integer and Bit-Vector modes, using QF_NIA  and quantifier-free bit-vector logic respectively.
+Unsatisfiability modulo some modulus proves UNSAT, while a satisfying candidate proves SAT; otherwise additional moduli and candidates are explored. The implementation offers Integer and Bit-Vector modes, using QF_NIA and quantifier-free bit-vector (QF_BV) logic respectively.
 
 During development, it was also necessary to create cvc5 and Z3 batch-solving scripts, which are available as CLI tools within this repository.
-
-<br>
 
 ---
 
@@ -188,7 +186,7 @@ latex_generator.main()
 
 ---
 
-## 6. Project File Structure
+## File Structure
 
 ```plaintext
 CRTSolver/
