@@ -1,0 +1,6 @@
+1. Refactor
+2. Add CLI params to solvers
+3. Clean up results pipeline
+4. Update README
+5. Validate once
+6. Set the proper results in notebook 

@@ -7,7 +7,6 @@ authors = [
 ]
 license = {text = "MIT"}
 readme = "README.md"
-package-mode = false
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "cvc5 (>=1.2.1,<1.4)",
@@ -17,10 +16,14 @@ dependencies = [
     "matplotlib (>=3.10,<3.11)"
 ]
 
-
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^7.1.0"
+
+[project.scripts]
+crt-solver = "crtsolver.solvers.crt_solver:main"
+cvc5-solver = "crtsolver.solvers.cvc5_solver:main"
+z3-solver   = "crtsolver.solvers.z3_solver:main"
