@@ -2,6 +2,6 @@
 2. Clean up results pipeline - DONE
 3. Add CLI params to solvers - DONE
 4. Add CLI params to CRTSolver - DONE
-5. Update README
-6. Validate once
+5. Update README - DONE
+6. Validate once - DOING
 7. Set the proper results in notebook 
