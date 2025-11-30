@@ -1,5 +1,7 @@
 # CRTSolver - Solving QF_NIA Using the Chinese Remainder Theorem
 
+**Tech Stack:** Python, Poetry, cvc5, Jupyter, Pandas, Matplotlib
+
 ## Introduction
 CRTSolver is a novel Chinese Remainder Theorem-based heuristic algorithm in Python, extending the cvc5 SMT solver
 to accelerate software/hardware verification workflows.
