@@ -6,7 +6,8 @@
 CRTSolver is a novel Chinese Remainder Theorem-based heuristic algorithm in Python, extending the cvc5 SMT solver
 to accelerate software/hardware verification workflows.
 
-The algorithm is designed for more efficient and successful solving of QF_NIA problems, combining the CRT-based heuristic with bit-vector encoding to achieve up to 13.2x speedup over baseline cvc5.
+The algorithm is designed for more efficient and successful solving of QF_NIA problems, combining the CRT-based heuristic with bit-vector encoding to achieve up to 7.8x speedup and a 7.1% higher solve
+rate over baseline cvc5.
 
 ### More formally...
 CRTSolver is a prototype SMT solver for  non-linear integer equations that leverages a Chinese Remainder Theorem-based heuristic and bit-vector encoding to achieve performance comparable or better than Z3 and cvc5 in quantifier-free non-linear integer arithmetic logic (QF_NIA) under 10-second timeouts and 4GB memory limits, across 38 SMT-LIB benchmarks with one to three variables, quadratic or cubic degree, and mixed SAT/UNSAT status.
